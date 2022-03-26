@@ -3,7 +3,9 @@ from tkinter import *
 
 root = Tk()
 root.title("Kockapóker")  # cím
-root.geometry("1000x1000")  # ablak mérete
+width= root.winfo_screenwidth()
+height= root.winfo_screenheight()
+root.geometry("%dx%d" % (width, height))
 root.configure(bg="white")  # háttérszín
 
 dobasok = []  # kockákat tárolja
@@ -279,5 +281,4 @@ bal_button_9.grid(row=9, column=2)
 gombok = [bal_button_1, bal_button_2, bal_button_3, bal_button_4, bal_button_5, bal_button_6, bal_button_7, bal_button_8, bal_button_9]
 
 dobas(dobasok, label_dobasok)
-root.attributes('-fullscreen', True)
 root.mainloop()
