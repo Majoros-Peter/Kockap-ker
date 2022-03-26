@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Szabályzat</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body onload="haladas(1)">
+    <h1>Szabályzat</h1>
+    <div id="div">
+        <img id="img">
+        <p id="aproBetusResz">Vidd rá az egeret a képre, hogy felnagyítsd.</p>
+        <p id="text"></p>
+        <button type="button" id="back" onclick="haladas(-1)" disabled>Előző</button>
+        <button type="button" id="next" onclick="haladas(1)">Következő</button>
+    </div>
+    <div id="lista">
+        <ul>
+            <li><b>Szemét:</b> - tetszőleges kombinációban az 5 kocka pontértékeinek összege</li>
+            <li><b>Pár:</b> - két egyforma érték összege</li>
+            <li><b>Drill:</b> - három egyforma érték összege</li>
+            <li><b>2 pár:</b> - két különböző értékből két-két egyforma érték összege</li>
+            <li><b>Full:</b> - két egyforma érték és három másik egyforma érték összege</li>
+            <li><b>Kis sor:</b> - 1,2,3,4,5-ös értékek <b>(15 pont)</b></li>
+            <li><b>Nagy sor:</b>- 2,3,4,5,6-os értékek <b>(20 pont)</b></li>
+            <li><b>Kis póker:</b> - négy egyforma érték összege</li>
+            <li><b>Nagy póker:</b> - öt egyforma érték <b>(50 pont)</b></li>
+        </ul>
+    </div>
+    <script src="main.js"></script>
+</body>
+
+</html>
