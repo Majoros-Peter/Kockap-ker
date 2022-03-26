@@ -133,8 +133,8 @@ def kis_poker():
 # nagy póker
 def nagy_poker():
     for sorszam in dobasok:
-        if dobasok.count(sorszam) >= 5:
-            button_9['text'] = sorszam * 5
+        if dobasok.count(sorszam) == 5:
+            button_9['text'] = 50
     if button_9['text'] == "Nagy póker":
         button_9['text'] = 0
     button_9['state'] = DISABLED
@@ -172,8 +172,8 @@ def bal_oldal():
 
     for szam in range(1, 7):
         if bal_button_9['state'] != DISABLED:   # nagy póker
-            if lista.count(szam) >= 5:
-                ertekek[8] = szam * 5
+            if lista.count(szam) == 5:
+                ertekek[8] = 50
         if bal_button_8['state'] != DISABLED:   # kis póker
             if lista.count(szam) >= 4:
                 ertekek[7] = szam * 4
