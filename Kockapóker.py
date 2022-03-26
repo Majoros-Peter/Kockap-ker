@@ -203,24 +203,29 @@ def bal_oldal():
         if lista.count(szam) >= 2:
             egyik_par = szam
 
-    if ertekek.index(max(ertekek)) == 0:
-        be_ir(bal_button_1, ertekek[0])
-    if ertekek.index(max(ertekek)) == 1:
-        be_ir(bal_button_2, ertekek[1])
-    if ertekek.index(max(ertekek)) == 2:
-        be_ir(bal_button_3, ertekek[2])
-    if ertekek.index(max(ertekek)) == 3:
-        be_ir(bal_button_4, ertekek[3])
-    if ertekek.index(max(ertekek)) == 4:
-        be_ir(bal_button_5, ertekek[4])
-    if ertekek.index(max(ertekek)) == 5:
-        be_ir(bal_button_6, ertekek[5])
-    if ertekek.index(max(ertekek)) == 6:
-        be_ir(bal_button_7, ertekek[6])
-    if ertekek.index(max(ertekek)) == 7:
-        be_ir(bal_button_8, ertekek[7])
-    if ertekek.index(max(ertekek)) == 8:
-        be_ir(bal_button_9, ertekek[8])
+    if ertekek.count(0) == 9:
+        for index in range(9):
+            if gombok[index]['state'] != DISABLED:
+                be_ir(gombok[index], ertekek[index])
+                break
+    elif ertekek.index(max(ertekek)) == 0:
+        be_ir(gombok[0], ertekek[0])
+    elif ertekek.index(max(ertekek)) == 1:
+        be_ir(gombok[1], ertekek[1])
+    elif ertekek.index(max(ertekek)) == 2:
+        be_ir(gombok[2], ertekek[2])
+    elif ertekek.index(max(ertekek)) == 3:
+        be_ir(gombok[3], ertekek[3])
+    elif ertekek.index(max(ertekek)) == 4:
+        be_ir(gombok[4], ertekek[4])
+    elif ertekek.index(max(ertekek)) == 5:
+        be_ir(gombok[5], ertekek[5])
+    elif ertekek.index(max(ertekek)) == 6:
+        be_ir(gombok[6], ertekek[6])
+    elif ertekek.index(max(ertekek)) == 7:
+        be_ir(gombok[7], ertekek[7])
+    elif ertekek.index(max(ertekek)) == 8:
+        be_ir(gombok[8], ertekek[8])
 
 
 label_dobasok = Label(root, width=10, padx=40, pady=20, bg="gray", fg="white", borderwidth=4, relief="sunken")
@@ -270,6 +275,8 @@ bal_button_6.grid(row=6, column=2)
 bal_button_7.grid(row=7, column=2)
 bal_button_8.grid(row=8, column=2)
 bal_button_9.grid(row=9, column=2)
+
+gombok = [bal_button_1, bal_button_2, bal_button_3, bal_button_4, bal_button_5, bal_button_6, bal_button_7, bal_button_8, bal_button_9]
 
 dobas(dobasok, label_dobasok)
 root.attributes('-fullscreen', True)
