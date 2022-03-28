@@ -1,24 +1,24 @@
 {
-    "player": {
-        "szemet": [],
-        "par": [],
-        "ket_par": [],
-        "drill": [],
-        "full": [],
-        "kis_sor": [],
-        "nagy_sor": [],
-        "kis_poker": [],
-        "nagy_poker": []
-    },
-    "enemy": {
-        "szemet": [],
-        "par": [],
-        "ket_par": [],
-        "drill": [],
-        "full": [],
-        "kis_sor": [],
-        "nagy_sor": [],
-        "kis_poker": [],
-        "nagy_poker": []
-    }
+    "player": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+    ],
+    "enemy": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+    ]
 }
