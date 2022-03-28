@@ -1,6 +1,6 @@
 import random, ctypes, json
 from tkinter import *
-#from PIL import ImageTk, Image
+from PIL import ImageTk, Image
 user32 = ctypes.windll.user32
 screensize_x, screensize_y = user32.GetSystemMetrics(78), user32.GetSystemMetrics(79)
 
@@ -10,9 +10,9 @@ root.attributes('-fullscreen', True)
 root.configure(bg="white")  # háttérszín
 root.grid_columnconfigure(1, minsize=1600)
 
-#img = ImageTk.PhotoImage(Image.open("bg_car.jpg"))
-#l=Label(image=img)
-#l.place(x=-2, y=-2)
+img = ImageTk.PhotoImage(Image.open("bg_car.jpg"))
+l=Label(image=img)
+l.place(x=-2, y=-2)
 
 dobasok, bal_dobasok = [], []  # kockákat tárolja, a másik meg a bot kockáit
 
@@ -160,6 +160,21 @@ def close():
 def ujra(gomb_lista, ellenseg_gombok, szoveg):
     for (gomb, gomb2, szo) in zip(gomb_lista, ellenseg_gombok, szoveg): gomb['state'], gomb2['state'], gomb['text'], gomb2['text'] = NORMAL, NORMAL, szo, szo
     dobas(dobasok, label_dobasok)
+    file = open('data.json', 'tr', encoding="UTF-8")
+    data = json.load(file)
+    file.close()
+    file = open('data.json', 'tw', encoding="UTF-8")
+    round = 0
+    for index in range(9):
+        if len(data['player'][index]) > round:
+            round = len(data['player'][index])
+    for index in range(9):
+        if len(data['player'][index]) < round:
+            data['player'][index].append(0)
+        if len(data['enemy'][index]) < round:
+            data['enemy'][index].append(0)
+    json.dump(data, file, indent=4)
+    file.close()
 
 
 def bal_oldal():
@@ -207,13 +222,13 @@ def bal_oldal():
         for index in range(9):
             if gombok[index]['state'] != DISABLED:
                 be_ir(gombok[index], ertekek[index])
-                fajlba_ir('enemy', dolgok[index], ertekek[index])
+                fajlba_ir('enemy', index, ertekek[index])
                 break
     else:
         for index in range(9):
             if ertekek.index(max(ertekek)) == index:
                 be_ir(gombok[index], ertekek[index])
-                fajlba_ir('enemy', dolgok[index], ertekek[index])
+                fajlba_ir('enemy', index, ertekek[index])
                 break
 
 
@@ -362,7 +377,6 @@ def fajlba_ir(player_or_enemy, dolgok, ertek):
     data = json.load(file)
     file.close()
     data[player_or_enemy][dolgok].append(ertek)
-    print(data[player_or_enemy][dolgok])
     file = open('data.json', 'tw', encoding="UTF-8")
     json.dump(data, file, indent=4)
     file.close()
@@ -370,15 +384,15 @@ def fajlba_ir(player_or_enemy, dolgok, ertek):
 
 
 label_dobasok = Label(root, width=10, padx=41, pady=20, bg="gray", fg="white", borderwidth=4, relief="sunken")
-button_1 = Button(root, text="Szemét", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [szemet(), dobas(dobasok, label_dobasok), fajlba_ir('player', 'szemet', button_1['text'])])
-button_2 = Button(root, text="Pár", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [par(), dobas(dobasok, label_dobasok), fajlba_ir('player', 'par', button_2["text"])])
-button_3 = Button(root, text="Két pár", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [ket_par(), dobas(dobasok, label_dobasok), fajlba_ir('player', 'ket_par', button_3["text"])])
-button_4 = Button(root, text="Drill", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [drill(), dobas(dobasok, label_dobasok), fajlba_ir('player', 'drill', button_4["text"])])
-button_5 = Button(root, text="Full", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [full(), dobas(dobasok, label_dobasok), fajlba_ir('player', 'full', button_5["text"])])
-button_6 = Button(root, text="Kis sor", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [kis_sor(), dobas(dobasok, label_dobasok), fajlba_ir('player', 'kis_sor', button_6["text"])])
-button_7 = Button(root, text="Nagy sor", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [nagy_sor(), dobas(dobasok, label_dobasok), fajlba_ir('player', 'nagy_sor', button_7["text"])])
-button_8 = Button(root, text="Kis póker", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [kis_poker(), dobas(dobasok, label_dobasok), fajlba_ir('player', 'kis_poker', button_8["text"])])
-button_9 = Button(root, text="Nagy póker", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [nagy_poker(), dobas(dobasok, label_dobasok), fajlba_ir('player', 'nagy_poker', button_9["text"])])
+button_1 = Button(root, text="Szemét", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [szemet(), dobas(dobasok, label_dobasok), fajlba_ir('player', 0, button_1['text'])])
+button_2 = Button(root, text="Pár", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [par(), dobas(dobasok, label_dobasok), fajlba_ir('player', 1, button_2["text"])])
+button_3 = Button(root, text="Két pár", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [ket_par(), dobas(dobasok, label_dobasok), fajlba_ir('player', 2, button_3["text"])])
+button_4 = Button(root, text="Drill", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [drill(), dobas(dobasok, label_dobasok), fajlba_ir('player', 3, button_4["text"])])
+button_5 = Button(root, text="Full", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [full(), dobas(dobasok, label_dobasok), fajlba_ir('player', 4, button_5["text"])])
+button_6 = Button(root, text="Kis sor", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [kis_sor(), dobas(dobasok, label_dobasok), fajlba_ir('player', 5, button_6["text"])])
+button_7 = Button(root, text="Nagy sor", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [nagy_sor(), dobas(dobasok, label_dobasok), fajlba_ir('player', 6, button_7["text"])])
+button_8 = Button(root, text="Kis póker", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [kis_poker(), dobas(dobasok, label_dobasok), fajlba_ir('player', 7, button_8["text"])])
+button_9 = Button(root, text="Nagy póker", width=10, padx=41, pady=20, bg="gray", fg="yellow", command=lambda: [nagy_poker(), dobas(dobasok, label_dobasok), fajlba_ir('player', 8, button_9["text"])])
 button_ujra = Button(root, text="R", width=5, height=1, padx=5, pady=5, bg="green", fg="white", command=lambda: ujra(jatekos_gombok, gombok, szovegek))
 button_kilep = Button(root, text="X", width=5, height=1, padx=5, pady=5, bg="red", fg="white", command=kilep)
 button_lecsuk = Button(root, text="__", width=5, height=1, padx=5, pady=5, bg="blue", fg="white", command=close)
