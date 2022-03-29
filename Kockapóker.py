@@ -27,11 +27,11 @@ def dobas(lista, label):
     szum_ellenseg = 0
     for gomb in jatekos_gombok:
         if str(gomb['text']).isdigit():
-            szum+=gomb['text']
+            szum += gomb['text']
     for gomb in gombok:
         if str(gomb['text']).isdigit():
-            szum_ellenseg+=gomb['text']
-    label_pontszam['text'] = str(szum), ':', str(szum_ellenseg)
+            szum_ellenseg += gomb['text']
+    label_pontszam['text'] = ellenorzes('player', jatekos_gombok, 'player_score'), ':', ellenorzes('enemy', gombok, 'enemy_score')
     return lista
 
 
@@ -40,23 +40,28 @@ def szemet():
     szum = 0
     for kocka in dobasok:
         szum += kocka
+    fajlba_ir('player', 0, szum, 'player_score')
     button_1['state'], button_1['text'] = DISABLED, szum
     jobb_oldal()
 
 
 # pár
 def par():
+    dobasok.sort()
+    szum = 0
     for sorszam in dobasok:
         if dobasok.count(sorszam) >= 2:
-            button_2['text'] = sorszam * 2
+            szum, button_2['text'] = sorszam * 2, sorszam * 2
     if button_2['text'] == "Pár":
-        button_2['text'] = 0
+        szum, button_2['text'] = 0, 0
+    fajlba_ir('player', 1, szum, 'player_score')
     button_2['state'] = DISABLED
     jobb_oldal()
 
 
 # két pár
 def ket_par():
+    dobasok.sort()
     parok = []
     for sorszam in dobasok:
         if dobasok.count(sorszam) >= 2:
@@ -67,23 +72,28 @@ def ket_par():
         szum = parok[-1] * 2 + parok[-3] * 2
     except:
         szum = 0
+    fajlba_ir('player', 2, szum, 'player_score')
     button_3['text'], button_3['state'] = szum, DISABLED
     jobb_oldal()
 
 
 # drill
 def drill():
+    dobasok.sort()
+    szum = 0
     for sorszam in dobasok:
         if dobasok.count(sorszam) >= 3:
-            button_4['text'] = sorszam * 3
+            szum, button_4['text'] = sorszam * 3, sorszam * 3
     if button_4['text'] == "Drill":
-        button_4['text'] = 0
+        szum, button_4['text'] = 0, 0
+    fajlba_ir('player', 3, szum, 'player_score')
     button_4['state'] = DISABLED
     jobb_oldal()
 
 
 # full house
 def full():
+    dobasok.sort()
     par, drill = 0, 0
     for sorszam in dobasok:
         if dobasok.count(sorszam) >= 3:
@@ -99,58 +109,69 @@ def full():
     button_5['text'] = szum
     if button_5['text'] == "Full":
         button_5['text'] = 0
+    fajlba_ir('player', 4, szum, 'player_score')
     button_5['state'] = DISABLED
     jobb_oldal()
 
 
 # kis sor
 def kis_sor():
+    dobasok.sort()
     seged, kis_sor = 1, True
     while seged != 6:
         if dobasok.count(seged) == 0:
             kis_sor = False
         seged += 1
     if kis_sor:
-        button_6['text'] = 15
+        szum, button_6['text'] = 15, 15
     else:
-        button_6['text'] = 0
+        szum, button_6['text'] = 0, 0
+    fajlba_ir('player', 5, szum, 'player_score')
     button_6['state'] = DISABLED
     jobb_oldal()
 
 
 # nagy sor
 def nagy_sor():
+    dobasok.sort()
     seged, nagy_sor = 2, True
     while seged != 7:
         if dobasok.count(seged) == 0:
             nagy_sor = False
         seged += 1
     if nagy_sor:
-        button_7['text'] = 20
+        szum, button_7['text'] = 20, 20
     else:
-        button_7['text'] = 0
+        szum, button_7['text'] = 0, 0
+    fajlba_ir('player', 6, szum, 'player_score')
     button_7['state'] = DISABLED
     jobb_oldal()
 
 
 # kis póker
 def kis_poker():
+    dobasok.sort()
+    szum = 0
     for sorszam in dobasok:
         if dobasok.count(sorszam) >= 4:
-            button_8['text'] = sorszam * 4
+            szum, button_8['text'] = sorszam * 4, sorszam * 4
     if button_8['text'] == "Kis póker":
-        button_8['text'] = 0
+        szum, button_8['text'] = 0, 0
+    fajlba_ir('player', 7, szum, 'player_score')
     button_8['state'] = DISABLED
     jobb_oldal()
 
 
 # nagy póker
 def nagy_poker():
+    dobasok.sort()
+    szum = 0
     for sorszam in dobasok:
         if dobasok.count(sorszam) >= 5:
-            button_9['text'] = 50
+            szum, button_9['text'] = 50, 50
     if button_9['text'] == "Nagy póker":
-        button_9['text'] = 0
+        szum, button_9['text'] = 0, 0
+    fajlba_ir('player', 8, szum, 'player_score')
     button_9['state'] = DISABLED
     jobb_oldal()
 
@@ -172,15 +193,13 @@ def ujra(gomb_lista, ellenseg_gombok, szoveg):
     data = json.load(file)
     file.close()
     file = open('data.json', 'tw', encoding="UTF-8")
-    round = 0
     for index in range(9):
-        if len(data['player'][index]) > round:
-            round = len(data['player'][index])
-    for index in range(9):
-        if len(data['player'][index]) < round:
+        if len(data['player'][index]) < data['round']:
             data['player'][index].append(0)
-        if len(data['enemy'][index]) < round:
+        if len(data['enemy'][index]) < data['round']:
             data['enemy'][index].append(0)
+    data['round'] += 1
+    data['player_score'], data['enemy_score'] = 0, 0
     json.dump(data, file, indent=4)
     file.close()
 
@@ -230,13 +249,13 @@ def jobb_oldal():
         for index in range(9):
             if gombok[index]['state'] != DISABLED:
                 be_ir(gombok[index], ertekek[index])
-                fajlba_ir('enemy', index, ertekek[index])
+                fajlba_ir('enemy', index, ertekek[index], 'enemy_score')
                 break
     else:
         for index in range(9):
             if ertekek.index(max(ertekek)) == index:
                 be_ir(gombok[index], ertekek[index])
-                fajlba_ir('enemy', index, ertekek[index])
+                fajlba_ir('enemy', index, ertekek[index], 'enemy_score')
                 break
 
 
@@ -380,27 +399,38 @@ def levesz(e):
             button_9['text'] = "Nagy póker"
 
 
-def fajlba_ir(player_or_enemy, dolgok, ertek):
+def fajlba_ir(player_or_enemy, index, ertek, score_type):
     file = open('data.json', 'tr', encoding="UTF-8")
     data = json.load(file)
     file.close()
-    data[player_or_enemy][dolgok].append(ertek)
+    data[player_or_enemy][index].append(ertek)
+    #data[player_or_enemy][score_type] += ertek
     file = open('data.json', 'tw', encoding="UTF-8")
     json.dump(data, file, indent=4)
     file.close()
 
+def ellenorzes(player_or_enemy, lista, score):
+    file = open('data.json', 'tr', encoding="UTF-8")
+    data = json.load(file)
+    file.close()
+    round = data['round']
+    for index in range(len(lista)):
+        if len(data[player_or_enemy][index]) == round:
+            lista[index]['state'] = DISABLED
+    return data[score]
+
 
 
 label_dobasok = Label(root, width=20, padx=41, pady=30, bg="gray", fg="white", borderwidth=4, relief="sunken")
-button_1 = Button(root, text="Szemét", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [szemet(), dobas(dobasok, label_dobasok), fajlba_ir('player', 0, button_1['text'])])
-button_2 = Button(root, text="Pár", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [par(), dobas(dobasok, label_dobasok), fajlba_ir('player', 1, button_2["text"])])
-button_3 = Button(root, text="Két pár", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [ket_par(), dobas(dobasok, label_dobasok), fajlba_ir('player', 2, button_3["text"])])
-button_4 = Button(root, text="Drill", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [drill(), dobas(dobasok, label_dobasok), fajlba_ir('player', 3, button_4["text"])])
-button_5 = Button(root, text="Full", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [full(), dobas(dobasok, label_dobasok), fajlba_ir('player', 4, button_5["text"])])
-button_6 = Button(root, text="Kis sor", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [kis_sor(), dobas(dobasok, label_dobasok), fajlba_ir('player', 5, button_6["text"])])
-button_7 = Button(root, text="Nagy sor", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [nagy_sor(), dobas(dobasok, label_dobasok), fajlba_ir('player', 6, button_7["text"])])
-button_8 = Button(root, text="Kis póker", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [kis_poker(), dobas(dobasok, label_dobasok), fajlba_ir('player', 7, button_8["text"])])
-button_9 = Button(root, text="Nagy póker", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [nagy_poker(), dobas(dobasok, label_dobasok), fajlba_ir('player', 8, button_9["text"])])
+button_1 = Button(root, text="Szemét", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [szemet(), dobas(dobasok, label_dobasok)])
+button_2 = Button(root, text="Pár", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [par(), dobas(dobasok, label_dobasok)])
+button_3 = Button(root, text="Két pár", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [ket_par(), dobas(dobasok, label_dobasok)])
+button_4 = Button(root, text="Drill", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [drill(), dobas(dobasok, label_dobasok)])
+button_5 = Button(root, text="Full", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [full(), dobas(dobasok, label_dobasok)])
+button_6 = Button(root, text="Kis sor", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [kis_sor(), dobas(dobasok, label_dobasok)])
+button_7 = Button(root, text="Nagy sor", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [nagy_sor(), dobas(dobasok, label_dobasok)])
+button_8 = Button(root, text="Kis póker", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [kis_poker(), dobas(dobasok, label_dobasok)])
+button_9 = Button(root, text="Nagy póker", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [nagy_poker(), dobas(dobasok, label_dobasok)])
 button_ujra = Button(root, text="R", width=5, height=1, padx=5, pady=5, bg="green", fg="white", command=lambda: ujra(jatekos_gombok, gombok, szovegek))
 button_kilep = Button(root, text="X", width=5, height=1, padx=5, pady=5, bg="red", fg="white", command=kilep)
 button_lecsuk = Button(root, text="__", width=5, height=1, padx=5, pady=5, bg="blue", fg="white", command=close)
@@ -466,5 +496,7 @@ jobb_button_8.place(x=screensize_x-158, y=538)
 jobb_button_9.place(x=screensize_x-158, y=601)
 
 gombok, jatekos_gombok, szovegek = [jobb_button_1, jobb_button_2, jobb_button_3, jobb_button_4, jobb_button_5, jobb_button_6, jobb_button_7, jobb_button_8, jobb_button_9], [button_1, button_2, button_3, button_4,button_5, button_6, button_7, button_8,button_9], ["Szemét", "Pár", "Két pár","Drill", "Full", "Kis sor","Nagy sor", "Kis póker","Nagy póker"]
+
+
 dobas(dobasok, label_dobasok)
 root.mainloop()
