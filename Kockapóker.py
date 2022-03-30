@@ -1,6 +1,6 @@
 import random, ctypes, json
 from tkinter import *
-from PIL import ImageTk, Image
+#from PIL import ImageTk, Image
 user32 = ctypes.windll.user32
 screensize_x, screensize_y = user32.GetSystemMetrics(78), user32.GetSystemMetrics(79)
 
@@ -10,8 +10,8 @@ root.attributes('-fullscreen', True)
 root.configure(bg="white")  # háttérszín
 root.grid_columnconfigure(1, minsize=1600)
 
-img = ImageTk.PhotoImage(Image.open("bg_car.jpg"))
-l=Label(image=img).place(x=2, y=2)
+#img = ImageTk.PhotoImage(Image.open("bg_car.jpg"))
+#l=Label(image=img).place(x=2, y=2)
 
 dobasok, jobb_dobasok = [], []  # kockákat tárolja, a másik meg a bot kockáit
 
@@ -404,7 +404,7 @@ def fajlba_ir(player_or_enemy, index, ertek, score_type):
     data = json.load(file)
     file.close()
     data[player_or_enemy][index].append(ertek)
-    #data[player_or_enemy][score_type] += ertek
+    data[score_type] += ertek
     file = open('data.json', 'tw', encoding="UTF-8")
     json.dump(data, file, indent=4)
     file.close()
@@ -413,9 +413,9 @@ def ellenorzes(player_or_enemy, lista, score):
     file = open('data.json', 'tr', encoding="UTF-8")
     data = json.load(file)
     file.close()
-    round = data['round']
     for index in range(len(lista)):
-        if len(data[player_or_enemy][index]) == round:
+        if len(data[player_or_enemy][index]) == data['round']:
+            lista[index]['text'] = data[player_or_enemy][index][-1]
             lista[index]['state'] = DISABLED
     return data[score]
 
@@ -496,7 +496,6 @@ jobb_button_8.place(x=screensize_x-158, y=538)
 jobb_button_9.place(x=screensize_x-158, y=601)
 
 gombok, jatekos_gombok, szovegek = [jobb_button_1, jobb_button_2, jobb_button_3, jobb_button_4, jobb_button_5, jobb_button_6, jobb_button_7, jobb_button_8, jobb_button_9], [button_1, button_2, button_3, button_4,button_5, button_6, button_7, button_8,button_9], ["Szemét", "Pár", "Két pár","Drill", "Full", "Kis sor","Nagy sor", "Kis póker","Nagy póker"]
-
 
 dobas(dobasok, label_dobasok)
 root.mainloop()
