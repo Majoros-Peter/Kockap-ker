@@ -1,17 +1,18 @@
 import random, ctypes, json
 from tkinter import *
-#from PIL import ImageTk, Image
+from PIL import ImageTk, Image
 user32 = ctypes.windll.user32
 screensize_x, screensize_y = user32.GetSystemMetrics(78), user32.GetSystemMetrics(79)
+import tkinter.font as font
 
 root = Tk()
 root.title("Kockapóker")  # cím
 root.attributes('-fullscreen', True)
-root.configure(bg="white")  # háttérszín
 root.grid_columnconfigure(1, minsize=1600)
+root.configure(bg="black")
 
-#img = ImageTk.PhotoImage(Image.open("bg_car.jpg"))
-#l=Label(image=img).place(x=2, y=2)
+img = ImageTk.PhotoImage(Image.open("23138.jpg"))
+l=Label(image=img).place(x=175, y=-40)
 
 dobasok, jobb_dobasok = [], []  # kockákat tárolja, a másik meg a bot kockáit
 
@@ -23,15 +24,29 @@ def dobas(lista, label):
         dobas = random.randint(1, 6)
         lista.append(dobas)
     label['text'] = lista
+
     szum=0
     szum_ellenseg = 0
+
+
     for gomb in jatekos_gombok:
         if str(gomb['text']).isdigit():
             szum += gomb['text']
+        if gomb['state'] == DISABLED:
+            gomb['cursor'] = "arrow"
+        else:
+            gomb['cursor'] = CURSOR
+
     for gomb in gombok:
         if str(gomb['text']).isdigit():
             szum_ellenseg += gomb['text']
+        if gomb['state'] == DISABLED:
+            gomb['cursor'] = "arrow"
+        else:
+            gomb['cursor'] = CURSOR
     label_pontszam['text'] = ellenorzes('player', jatekos_gombok, 'player_score'), ':', ellenorzes('enemy', gombok, 'enemy_score')
+
+
     return lista
 
 
@@ -176,10 +191,6 @@ def nagy_poker():
     jobb_oldal()
 
 
-def be_ir(button, ertek):
-    button['text'], button['state'] = ertek, DISABLED
-
-
 def kilep():
     root.destroy()
 
@@ -248,13 +259,11 @@ def jobb_oldal():
     if ertekek.count(0) == 9:
         for index in range(9):
             if gombok[index]['state'] != DISABLED:
-                be_ir(gombok[index], ertekek[index])
                 fajlba_ir('enemy', index, ertekek[index], 'enemy_score')
                 break
     else:
         for index in range(9):
             if ertekek.index(max(ertekek)) == index:
-                be_ir(gombok[index], ertekek[index])
                 fajlba_ir('enemy', index, ertekek[index], 'enemy_score')
                 break
 
@@ -422,71 +431,72 @@ def ellenorzes(player_or_enemy, lista, score):
             lista[index]['state'] = NORMAL
     return data[score]
 
+PADX=41
+PADY=10
+BG="white"
+FG="lime"
+FONT = font.Font(size=25, family="Courier", weight="bold")
+DISFG="black"
+CURSOR= "X_cursor"
+ACTBG="lime"
+ACTFG="black"
+MAGASSAG=(screensize_y-33)//9
+SZELESSEG=250
 
 
-label_dobasok = Label(root, width=20, padx=41, pady=30, bg="gray", fg="white", borderwidth=4, relief="sunken")
-button_1 = Button(root, text="Szemét", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [szemet(), dobas(dobasok, label_dobasok)])
-button_2 = Button(root, text="Pár", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [par(), dobas(dobasok, label_dobasok)])
-button_3 = Button(root, text="Két pár", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [ket_par(), dobas(dobasok, label_dobasok)])
-button_4 = Button(root, text="Drill", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [drill(), dobas(dobasok, label_dobasok)])
-button_5 = Button(root, text="Full", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [full(), dobas(dobasok, label_dobasok)])
-button_6 = Button(root, text="Kis sor", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [kis_sor(), dobas(dobasok, label_dobasok)])
-button_7 = Button(root, text="Nagy sor", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [nagy_sor(), dobas(dobasok, label_dobasok)])
-button_8 = Button(root, text="Kis póker", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [kis_poker(), dobas(dobasok, label_dobasok)])
-button_9 = Button(root, text="Nagy póker", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [nagy_poker(), dobas(dobasok, label_dobasok)])
+button_1 = Button(root, text="Szemét", padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, disabledforeground=DISFG, cursor=CURSOR, activebackground=ACTBG, activeforeground=ACTFG, command=lambda: [szemet(), dobas(dobasok, label_dobasok)])
+button_2 = Button(root, text="Pár", padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, disabledforeground=DISFG, cursor=CURSOR, activebackground=ACTBG, activeforeground=ACTFG, command=lambda: [par(), dobas(dobasok, label_dobasok)])
+button_3 = Button(root, text="Két pár", padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, disabledforeground=DISFG, cursor=CURSOR, activebackground=ACTBG, activeforeground=ACTFG, command=lambda: [ket_par(), dobas(dobasok, label_dobasok)])
+button_4 = Button(root, text="Drill", padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, disabledforeground=DISFG, cursor=CURSOR, activebackground=ACTBG, activeforeground=ACTFG, command=lambda: [drill(), dobas(dobasok, label_dobasok)])
+button_5 = Button(root, text="Full", padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, disabledforeground=DISFG, cursor=CURSOR, activebackground=ACTBG, activeforeground=ACTFG, command=lambda: [full(), dobas(dobasok, label_dobasok)])
+button_6 = Button(root, text="Kis sor", padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, disabledforeground=DISFG, cursor=CURSOR, activebackground=ACTBG, activeforeground=ACTFG, command=lambda: [kis_sor(), dobas(dobasok, label_dobasok)])
+button_7 = Button(root, text="Nagy sor", padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, disabledforeground=DISFG, cursor=CURSOR, activebackground=ACTBG, activeforeground=ACTFG, command=lambda: [nagy_sor(), dobas(dobasok, label_dobasok)])
+button_8 = Button(root, text="Kis póker", padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, disabledforeground=DISFG, cursor=CURSOR, activebackground=ACTBG, activeforeground=ACTFG, command=lambda: [kis_poker(), dobas(dobasok, label_dobasok)])
+button_9 = Button(root, text="Nagy póker", padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, disabledforeground=DISFG, cursor=CURSOR, activebackground=ACTBG, activeforeground=ACTFG, command=lambda: [nagy_poker(), dobas(dobasok, label_dobasok)])
 button_ujra = Button(root, text="R", width=5, height=1, padx=5, pady=5, bg="green", fg="white", command=lambda: [ujra(jatekos_gombok, gombok, szovegek), dobas(dobasok, label_dobasok)])
-button_kilep = Button(root, text="X", width=5, height=1, padx=5, pady=5, bg="red", fg="white", command=kilep)
+button_kilep = Button(root, text="X", width=5, height=1, padx=5, pady=5, bg="red", fg="white" , command=kilep)
 button_lecsuk = Button(root, text="__", width=5, height=1, padx=5, pady=5, bg="blue", fg="white", command=close)
 
-jobb_label_dobasok = Label(root, width=10, padx=40, pady=20, bg="gray", fg="white", borderwidth=4, relief="sunken")
+label_dobasok = Label(root, padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, borderwidth=4, relief="sunken")
+label_dobasok.place(x=250, y=33, width=SZELESSEG, height=MAGASSAG/2)
+jobb_label_dobasok = Label(root, padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT,  borderwidth=4, relief="sunken")
+jobb_label_dobasok.place(x=screensize_x-SZELESSEG*2, y=34, width=SZELESSEG, height=MAGASSAG/2)
 
 gombok, jatekos_gombok, szovegek = [], [button_1, button_2, button_3, button_4,button_5, button_6, button_7, button_8, button_9], ["Szemét", "Pár", "Két pár", "Drill", "Full", "Kis sor", "Nagy sor", "Kis póker", "Nagy póker"]
 
+pos_y = 33
 for index in range(9):
-    gomb = Button(root, text=szovegek[index], width=10, padx=40, pady=20, bg="gray", fg="yellow")
+    gomb = Button(root, text=szovegek[index], padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, disabledforeground=DISFG, cursor=CURSOR, activebackground=BG, activeforeground=FG)
     gombok.append(gomb)
-    gomb.place(x=screensize_x-158, y=97+(index*63))
+    gomb.place(x=screensize_x-SZELESSEG, y=pos_y, width=SZELESSEG, height=MAGASSAG)
+    pos_y+=MAGASSAG
 
-space1 = Label(root, width=250, text="adaawdawddawawddaw", height=1, padx=4, pady=7, bg="white", fg="white")
+space1 = Label(root, width=250, text="", height=1, padx=4, pady=7, bg="white", fg="white")
 space1.place(x=0, y=0)
-label_pontszam = Label(root, width=10, text="almafafafa", pady=7, bg="#FFFFFF", fg="black")
-label_pontszam.place(x=screensize_x/2-100, y=50)
+
+label_pontszam = Label(root, width=10, text="", pady=7, bg="#FFFFFF", fg="black")
+label_pontszam.place(x=screensize_x/2-175, y=50)
 label_pontszam.config(font=("Arial", 44))
 
 button_kilep.place(x=screensize_x-53, y=0)
 button_ujra.place(x=screensize_x-106, y=0)
 button_lecsuk.place(x=screensize_x-159, y=0)
-label_dobasok.grid(row=1, column=0)
-button_1.grid(row=2, column=0)
-button_2.grid(row=3, column=0)
-button_3.grid(row=4, column=0)
-button_4.grid(row=5, column=0)
-button_5.grid(row=6, column=0)
-button_6.grid(row=7, column=0)
-button_7.grid(row=8, column=0)
-button_8.grid(row=9, column=0)
-button_9.grid(row=10, column=0)
+
+pos_y = 33
+for gomb in jatekos_gombok:
+    gomb.place(x=0, y=pos_y, width=SZELESSEG, height=MAGASSAG)
+    pos_y+=MAGASSAG
+    gomb.bind("<Leave>", levesz)
+
 button_1.bind("<Enter>", ravisz_1)
-button_1.bind("<Leave>", levesz)
 button_2.bind("<Enter>", ravisz_2)
-button_2.bind("<Leave>", levesz)
 button_3.bind("<Enter>", ravisz_3)
-button_3.bind("<Leave>", levesz)
 button_4.bind("<Enter>", ravisz_4)
-button_4.bind("<Leave>", levesz)
 button_5.bind("<Enter>", ravisz_5)
-button_5.bind("<Leave>", levesz)
 button_6.bind("<Enter>", ravisz_6)
-button_6.bind("<Leave>", levesz)
 button_7.bind("<Enter>", ravisz_7)
-button_7.bind("<Leave>", levesz)
 button_8.bind("<Enter>", ravisz_8)
-button_8.bind("<Leave>", levesz)
 button_9.bind("<Enter>", ravisz_9)
-button_9.bind("<Leave>", levesz)
-
-jobb_label_dobasok.place(x=screensize_x-158, y=34)
-
 
 dobas(dobasok, label_dobasok)
 root.mainloop()
