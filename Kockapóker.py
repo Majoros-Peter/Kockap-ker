@@ -208,12 +208,12 @@ def jobb_oldal():
     egyik_par, ertekek, k_sor, n_sor, lista, dolgok = 0, [0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 2, 3, 4, 5], [2, 3, 4, 5, 6], dobas(jobb_dobasok, jobb_label_dobasok), ["szemet", "par", "ket_par", "drill", "full", "kis_sor", "nagy_sor", "kis_poker", "nagy_poker"]
 
     for szam in lista:
-        if jobb_button_1['state'] != DISABLED:  # szemét
+        if gombok[0]['state'] != DISABLED:  # szemét
             ertekek[0] += szam
-        if jobb_button_6['state'] != DISABLED:  # kis sor
+        if gombok[5]['state'] != DISABLED:  # kis sor
             if szam in k_sor:
                 k_sor.remove(szam)
-        if jobb_button_7['state'] != DISABLED:  # nagy sor
+        if gombok[6]['state'] != DISABLED:  # nagy sor
             if szam in n_sor:
                 n_sor.remove(szam)
     if len(k_sor) == 0:
@@ -222,24 +222,24 @@ def jobb_oldal():
         ertekek[6] = 20
 
     for szam in range(1, 7):
-        if jobb_button_9['state'] != DISABLED:  # nagy póker
+        if gombok[8]['state'] != DISABLED:  # nagy póker
             if lista.count(szam) >= 5:
                 ertekek[8] = 50
-        if jobb_button_8['state'] != DISABLED:  # kis póker
+        if gombok[7]['state'] != DISABLED:  # kis póker
             if lista.count(szam) >= 4:
                 ertekek[7] = szam * 4
-        if jobb_button_4['state'] != DISABLED:  # drill
+        if gombok[3]['state'] != DISABLED:  # drill
             if lista.count(szam) >= 3:
                 ertekek[3] = szam * 3
-        if jobb_button_2['state'] != DISABLED:  # pár
+        if gombok[1]['state'] != DISABLED:  # pár
             if lista.count(szam) >= 2:
                 ertekek[1] = szam * 2
-        if jobb_button_5['state'] != DISABLED:  # full
+        if gombok[4]['state'] != DISABLED:  # full
             if egyik_par != 0 and egyik_par != szam and lista.count(szam) >= 3:
                 ertekek[4] = (egyik_par + szam) * 2 + szam
             elif ertekek[3] != 0 and (ertekek[3] / 3) != szam and lista.count(szam) >= 2:
                 ertekek[4] = ertekek[3] + (szam * 2)
-        if jobb_button_3['state'] != DISABLED:  # két pár
+        if gombok[2]['state'] != DISABLED:  # két pár
             if egyik_par != 0 and egyik_par != szam and lista.count(szam) == 2:
                 ertekek[2] = (egyik_par + szam) * 2
         if lista.count(szam) >= 2:
@@ -417,6 +417,9 @@ def ellenorzes(player_or_enemy, lista, score):
         if len(data[player_or_enemy][index]) == data['round']:
             lista[index]['text'] = data[player_or_enemy][index][-1]
             lista[index]['state'] = DISABLED
+        else:
+            lista[index]['text'] = szovegek[index]
+            lista[index]['state'] = NORMAL
     return data[score]
 
 
@@ -431,20 +434,18 @@ button_6 = Button(root, text="Kis sor", width=20, padx=41, pady=30, bg="gray", f
 button_7 = Button(root, text="Nagy sor", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [nagy_sor(), dobas(dobasok, label_dobasok)])
 button_8 = Button(root, text="Kis póker", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [kis_poker(), dobas(dobasok, label_dobasok)])
 button_9 = Button(root, text="Nagy póker", width=20, padx=41, pady=30, bg="gray", fg="yellow", command=lambda: [nagy_poker(), dobas(dobasok, label_dobasok)])
-button_ujra = Button(root, text="R", width=5, height=1, padx=5, pady=5, bg="green", fg="white", command=lambda: ujra(jatekos_gombok, gombok, szovegek))
+button_ujra = Button(root, text="R", width=5, height=1, padx=5, pady=5, bg="green", fg="white", command=lambda: [ujra(jatekos_gombok, gombok, szovegek), dobas(dobasok, label_dobasok)])
 button_kilep = Button(root, text="X", width=5, height=1, padx=5, pady=5, bg="red", fg="white", command=kilep)
 button_lecsuk = Button(root, text="__", width=5, height=1, padx=5, pady=5, bg="blue", fg="white", command=close)
 
 jobb_label_dobasok = Label(root, width=10, padx=40, pady=20, bg="gray", fg="white", borderwidth=4, relief="sunken")
-jobb_button_1 = Button(root, text="Szemét", width=10, padx=40, pady=20, bg="gray", fg="yellow")
-jobb_button_2 = Button(root, text="Pár", width=10, padx=40, pady=20, bg="gray", fg="yellow")
-jobb_button_3 = Button(root, text="Két pár", width=10, padx=40, pady=20, bg="gray", fg="yellow")
-jobb_button_4 = Button(root, text="Drill", width=10, padx=40, pady=20, bg="gray", fg="yellow")
-jobb_button_5 = Button(root, text="Full", width=10, padx=40, pady=20, bg="gray", fg="yellow")
-jobb_button_6 = Button(root, text="Kis sor", width=10, padx=40, pady=20, bg="gray", fg="yellow")
-jobb_button_7 = Button(root, text="Nagy sor", width=10, padx=40, pady=20, bg="gray", fg="yellow")
-jobb_button_8 = Button(root, text="Kis póker", width=10, padx=40, pady=20, bg="gray", fg="yellow")
-jobb_button_9 = Button(root, text="Nagy póker", width=10, padx=40, pady=20, bg="gray", fg="yellow")
+
+gombok, jatekos_gombok, szovegek = [], [button_1, button_2, button_3, button_4,button_5, button_6, button_7, button_8, button_9], ["Szemét", "Pár", "Két pár", "Drill", "Full", "Kis sor", "Nagy sor", "Kis póker", "Nagy póker"]
+
+for index in range(9):
+    gomb = Button(root, text=szovegek[index], width=10, padx=40, pady=20, bg="gray", fg="yellow")
+    gombok.append(gomb)
+    gomb.place(x=screensize_x-158, y=97+(index*63))
 
 space1 = Label(root, width=250, text="adaawdawddawawddaw", height=1, padx=4, pady=7, bg="white", fg="white")
 space1.place(x=0, y=0)
@@ -485,17 +486,7 @@ button_9.bind("<Enter>", ravisz_9)
 button_9.bind("<Leave>", levesz)
 
 jobb_label_dobasok.place(x=screensize_x-158, y=34)
-jobb_button_1.place(x=screensize_x-158, y=97)
-jobb_button_2.place(x=screensize_x-158, y=160)
-jobb_button_3.place(x=screensize_x-158, y=223)
-jobb_button_4.place(x=screensize_x-158, y=286)
-jobb_button_5.place(x=screensize_x-158, y=349)
-jobb_button_6.place(x=screensize_x-158, y=412)
-jobb_button_7.place(x=screensize_x-158, y=475)
-jobb_button_8.place(x=screensize_x-158, y=538)
-jobb_button_9.place(x=screensize_x-158, y=601)
 
-gombok, jatekos_gombok, szovegek = [jobb_button_1, jobb_button_2, jobb_button_3, jobb_button_4, jobb_button_5, jobb_button_6, jobb_button_7, jobb_button_8, jobb_button_9], [button_1, button_2, button_3, button_4,button_5, button_6, button_7, button_8,button_9], ["Szemét", "Pár", "Két pár","Drill", "Full", "Kis sor","Nagy sor", "Kis póker","Nagy póker"]
 
 dobas(dobasok, label_dobasok)
 root.mainloop()
