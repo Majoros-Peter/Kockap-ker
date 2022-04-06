@@ -16,7 +16,6 @@ l=Label(image=img).place(x=175, y=-40)
 
 dobasok, jobb_dobasok = [], []  # kockákat tárolja, a másik meg a bot kockáit
 
-
 # "dob" a kockákkal
 def dobas(lista, label):
     lista.clear()  # lista kiürítése
@@ -195,9 +194,6 @@ def be_ir(button, ertek):
     button['text'], button['state'] = ertek, DISABLED
 
 
-def kilep():
-    root.destroy()
-
 def close():
     root.iconify()
 
@@ -217,7 +213,16 @@ def ujra(gomb_lista, ellenseg_gombok, szoveg):
     data['player_score'], data['enemy_score'] = 0, 0
     json.dump(data, file, indent=4)
     file.close()
+    label_jatek_vege.place(x=10000, y=screensize_y / 3 + screensize_y / 24, width=screensize_x / 4,height=screensize_y / 4)
+    label_jatek_vege_alap.place(x=10000, y=screensize_y / 3 + screensize_y / 24, width=screensize_x / 4,height=screensize_y / 4)
+    button_vege.place(x=10000, y=screensize_y / 2 + 100)
 
+def kilep():
+    if not vege_van():
+        root.destroy()
+    else:
+        ujra(jatekos_gombok, gombok, szovegek)
+        root.destroy()
 
 def jobb_oldal():
     egyik_par, ertekek, k_sor, n_sor, lista, dolgok = 0, [0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 2, 3, 4, 5], [2, 3, 4, 5, 6], dobas(jobb_dobasok, jobb_label_dobasok), ["szemet", "par", "ket_par", "drill", "full", "kis_sor", "nagy_sor", "kis_poker", "nagy_poker"]
@@ -273,6 +278,8 @@ def jobb_oldal():
                 fajlba_ir('enemy', index, ertekek[index], 'enemy_score')
                 break
 
+    if vege_van():
+        eredmeny_hirdetes()
 
 def ravisz_1(e):
     def szemet2():
@@ -413,7 +420,6 @@ def levesz(e):
         if button_9['state'] == NORMAL:
             button_9['text'] = "Nagy póker"
 
-
 def fajlba_ir(player_or_enemy, index, ertek, score_type):
     file = open('data.json', 'tr', encoding="UTF-8")
     data = json.load(file)
@@ -437,11 +443,31 @@ def ellenorzes(player_or_enemy, lista, score):
             lista[index]['state'] = NORMAL
     return data[score]
 
+def vege_van():
+    van_enable_gomb = True
+    for gomb in gombok:
+        if gomb['state'] == NORMAL:
+            van_enable_gomb = False
+    return van_enable_gomb
+
+def eredmeny_hirdetes():
+    label_jatek_vege_alap.place(x=screensize_x / 3, y=screensize_y / 3, width=screensize_x / 3, height=screensize_y / 3)
+    label_jatek_vege.place(x=screensize_x / 3 + screensize_x / 24, y=screensize_y / 3 + screensize_y / 24, width=screensize_x / 4, height=screensize_y / 4)
+    button_vege.place(x=screensize_x / 2 - screensize_x / 150 - 50, y=screensize_y / 2 + 100)
+    if ellenorzes('player', jatekos_gombok, 'player_score') > ellenorzes('enemy', gombok, 'enemy_score'):
+        label_jatek_vege['text'] = "Győztél!"
+    elif ellenorzes('player', jatekos_gombok, 'player_score') < ellenorzes('enemy', gombok, 'enemy_score'):
+        label_jatek_vege['text'] = "Vesztettél!"
+    else:
+        label_jatek_vege['text'] = "Döntetlen!"
+
+
 PADX=41
 PADY=10
 BG="white"
 FG="lime"
 FONT = font.Font(size=25, family="Courier", weight="bold")
+FONT_eredmeny = font.Font(size=50, family="Arial")
 DISFG="black"
 CURSOR= "X_cursor"
 ACTBG="lime"
@@ -459,7 +485,7 @@ button_6 = Button(root, text="Kis sor", padx=PADX, pady=PADY, bg=BG, fg=FG, font
 button_7 = Button(root, text="Nagy sor", padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, disabledforeground=DISFG, cursor=CURSOR, activebackground=ACTBG, activeforeground=ACTFG, command=lambda: [nagy_sor(), dobas(dobasok, label_dobasok)])
 button_8 = Button(root, text="Kis póker", padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, disabledforeground=DISFG, cursor=CURSOR, activebackground=ACTBG, activeforeground=ACTFG, command=lambda: [kis_poker(), dobas(dobasok, label_dobasok)])
 button_9 = Button(root, text="Nagy póker", padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, disabledforeground=DISFG, cursor=CURSOR, activebackground=ACTBG, activeforeground=ACTFG, command=lambda: [nagy_poker(), dobas(dobasok, label_dobasok)])
-button_ujra = Button(root, text="R", width=5, height=1, padx=5, pady=5, bg="green", fg="white", command=lambda: [ujra(jatekos_gombok, gombok, szovegek), dobas(dobasok, label_dobasok)])
+button_ujra = Button(root, text="↺", width=5, height=1, padx=5, pady=5, bg="green", fg="white", command=lambda: [ujra(jatekos_gombok, gombok, szovegek), dobas(dobasok, label_dobasok)])
 button_kilep = Button(root, text="X", width=5, height=1, padx=5, pady=5, bg="red", fg="white" , command=kilep)
 button_lecsuk = Button(root, text="__", width=5, height=1, padx=5, pady=5, bg="blue", fg="white", command=close)
 
@@ -467,6 +493,10 @@ label_dobasok = Label(root, padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, borde
 label_dobasok.place(x=250, y=33, width=SZELESSEG, height=MAGASSAG/2)
 jobb_label_dobasok = Label(root, padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT,  borderwidth=4, relief="sunken")
 jobb_label_dobasok.place(x=screensize_x-SZELESSEG*2, y=34, width=SZELESSEG, height=MAGASSAG/2)
+
+label_jatek_vege_alap = Label(root, padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, borderwidth=10, relief="flat")
+label_jatek_vege = Label(root, padx=PADX*3, pady=PADY*3, bg=BG, fg=FG, font=FONT_eredmeny, borderwidth=5, relief="sunken")
+button_vege = Button(root, text="Újra", width=int(screensize_x/300), height=int(screensize_y/700), padx=0, pady=0, font=FONT, bg="green", fg="white", command=lambda: [ujra(jatekos_gombok, gombok, szovegek), dobas(dobasok, label_dobasok)])
 
 gombok, jatekos_gombok, szovegek = [], [button_1, button_2, button_3, button_4,button_5, button_6, button_7, button_8, button_9], ["Szemét", "Pár", "Két pár", "Drill", "Full", "Kis sor", "Nagy sor", "Kis póker", "Nagy póker"]
 
@@ -503,6 +533,13 @@ button_6.bind("<Enter>", ravisz_6)
 button_7.bind("<Enter>", ravisz_7)
 button_8.bind("<Enter>", ravisz_8)
 button_9.bind("<Enter>", ravisz_9)
+
+if vege_van():
+    eredmeny_hirdetes()
+else:
+    label_jatek_vege.place(x=10000, y=screensize_y / 3 + screensize_y / 24, width=screensize_x / 4, height=screensize_y / 4)
+    label_jatek_vege_alap.place(x=10000, y=screensize_y / 3, width=screensize_x / 3, height=screensize_y / 3)
+    button_vege.place(x=10000, y=screensize_y / 2 + 100)
 
 dobas(dobasok, label_dobasok)
 root.mainloop()
