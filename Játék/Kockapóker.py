@@ -189,14 +189,15 @@ def nagy_poker():
     button_9['state'] = DISABLED
     jobb_oldal()
 
-
+# átírja a gombok szövegét és állapotát disabled-re
 def be_ir(button, ertek):
     button['text'], button['state'] = ertek, DISABLED
 
-
+# lecsukja az ablakot
 def close():
     root.iconify()
 
+# Újraindítja a játékot, kitölti a fájlt nullásokkal az üres helyeken, visszaállítja pontszámokat és gombokat
 def ujra(gomb_lista, ellenseg_gombok, szoveg):
     for (gomb, gomb2, szo) in zip(gomb_lista, ellenseg_gombok, szoveg): gomb['state'], gomb2['state'], gomb['text'], gomb2['text'] = NORMAL, NORMAL, szo, szo
     dobas(dobasok, label_dobasok)
@@ -217,6 +218,7 @@ def ujra(gomb_lista, ellenseg_gombok, szoveg):
     label_jatek_vege_alap.place(x=10000, y=screensize_y / 3 + screensize_y / 24, width=screensize_x / 4,height=screensize_y / 4)
     button_vege.place(x=10000, y=screensize_y / 2 + 100)
 
+# bezárja az ablakot, ha a játék vége után történik, akkor előtte újraindítja  ajátékot és csak utána lép ki
 def kilep():
     if not vege_van():
         root.destroy()
@@ -224,6 +226,7 @@ def kilep():
         ujra(jatekos_gombok, gombok, szovegek)
         root.destroy()
 
+# számítógép lépése lépése, összehasonlítja az összes értéket és az alapján dönt. Ez írja le az ellenség működését/gondolkodását
 def jobb_oldal():
     egyik_par, ertekek, k_sor, n_sor, lista, dolgok = 0, [0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 2, 3, 4, 5], [2, 3, 4, 5, 6], dobas(jobb_dobasok, jobb_label_dobasok), ["szemet", "par", "ket_par", "drill", "full", "kis_sor", "nagy_sor", "kis_poker", "nagy_poker"]
 
@@ -281,6 +284,7 @@ def jobb_oldal():
     if vege_van():
         eredmeny_hirdetes()
 
+# Hover effekt az 1-es gombon
 def ravisz_1(e):
     def szemet2():
         szum = 0
@@ -290,6 +294,7 @@ def ravisz_1(e):
     if button_1['state'] == NORMAL:
         button_1['text'] = szemet2()
 
+# Hover effekt az 2-es gombon
 def ravisz_2(e):
     def par2():
         eredmeny = 0
@@ -300,6 +305,7 @@ def ravisz_2(e):
     if button_2['state'] == NORMAL:
         button_2['text'] = par2()
 
+# Hover effekt az 3-as gombon
 def ravisz_3(e):
     def ket_par2():
         parok = []
@@ -320,6 +326,7 @@ def ravisz_3(e):
     if button_3['state'] == NORMAL:
         button_3['text'] = ket_par2()
 
+# Hover effekt az 4-es gombon
 def ravisz_4(e):
     def drill2():
         eredmeny=0
@@ -330,6 +337,7 @@ def ravisz_4(e):
     if button_4['state'] == NORMAL:
         button_4['text'] = drill2()
 
+# Hover effekt az 1-ös gombon
 def ravisz_5(e):
     def full2():
         par, drill, eredmeny, dobasok_clone = 0, 0, 0, []
@@ -350,6 +358,7 @@ def ravisz_5(e):
     if button_5['state'] == NORMAL:
         button_5['text'] = full2()
 
+# Hover effekt az 6-os gombon
 def ravisz_6(e):
     def kis_sor2():
         seged, kis_sor = 1, True
@@ -365,6 +374,7 @@ def ravisz_6(e):
     if button_6['state'] == NORMAL:
         button_6['text'] = kis_sor2()
 
+# Hover effekt az 7-es gombon
 def ravisz_7(e):
     def nagy_sor2():
         seged, nagy_sor = 2, True
@@ -380,6 +390,7 @@ def ravisz_7(e):
     if button_7['state'] == NORMAL:
         button_7['text'] = nagy_sor2()
 
+# Hover effekt az 8-as gombon
 def ravisz_8(e):
     def kis_poker2():
         eredmeny = 0
@@ -390,6 +401,7 @@ def ravisz_8(e):
     if button_8['state'] == NORMAL:
         button_8['text'] = kis_poker2()
 
+# Hover effekt az 9-es gombon
 def ravisz_9(e):
     def nagy_poker2():
         eredmeny = 0
@@ -400,6 +412,7 @@ def ravisz_9(e):
     if button_9['state'] == NORMAL:
         button_9['text'] = nagy_poker2()
 
+# Hover effekt eltűnése a gombról
 def levesz(e):
         if button_1['state'] == NORMAL:
             button_1['text'] = "Szemét"
@@ -420,6 +433,7 @@ def levesz(e):
         if button_9['state'] == NORMAL:
             button_9['text'] = "Nagy póker"
 
+# beírja a fájlba az értékeket
 def fajlba_ir(player_or_enemy, index, ertek, score_type):
     file = open('data.json', 'tr', encoding="UTF-8")
     data = json.load(file)
@@ -430,6 +444,7 @@ def fajlba_ir(player_or_enemy, index, ertek, score_type):
     json.dump(data, file, indent=4)
     file.close()
 
+# kikapcsolja a gombokat és visszaadja a pont értékét
 def ellenorzes(player_or_enemy, lista, score):
     file = open('data.json', 'tr', encoding="UTF-8")
     data = json.load(file)
@@ -443,6 +458,7 @@ def ellenorzes(player_or_enemy, lista, score):
             lista[index]['state'] = NORMAL
     return data[score]
 
+# megnézi, hogy minden gom ki van-e kapcsolva, azaz vége van-e a játéknak
 def vege_van():
     van_enable_gomb = True
     for gomb in gombok:
@@ -450,6 +466,7 @@ def vege_van():
             van_enable_gomb = False
     return van_enable_gomb
 
+# eredményjelző képernyő
 def eredmeny_hirdetes():
     label_jatek_vege_alap.place(x=screensize_x / 3, y=screensize_y / 3, width=screensize_x / 3, height=screensize_y / 3)
     label_jatek_vege.place(x=screensize_x / 3 + screensize_x / 24, y=screensize_y / 3 + screensize_y / 24, width=screensize_x / 4, height=screensize_y / 4)
@@ -461,7 +478,7 @@ def eredmeny_hirdetes():
     else:
         label_jatek_vege['text'] = "Döntetlen!"
 
-
+# változók a gombokhoz és szövegekhez, egyszerűsítik a kinézet változtatását
 PADX=41
 PADY=10
 BG="white"
@@ -475,7 +492,7 @@ ACTFG="black"
 MAGASSAG=(screensize_y-33)//9
 SZELESSEG=250
 
-
+# gombok és szövegek meghívása és elhelyezése
 button_1 = Button(root, text="Szemét", padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, disabledforeground=DISFG, cursor=CURSOR, activebackground=ACTBG, activeforeground=ACTFG, command=lambda: [szemet(), dobas(dobasok, label_dobasok)])
 button_2 = Button(root, text="Pár", padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, disabledforeground=DISFG, cursor=CURSOR, activebackground=ACTBG, activeforeground=ACTFG, command=lambda: [par(), dobas(dobasok, label_dobasok)])
 button_3 = Button(root, text="Két pár", padx=PADX, pady=PADY, bg=BG, fg=FG, font=FONT, disabledforeground=DISFG, cursor=CURSOR, activebackground=ACTBG, activeforeground=ACTFG, command=lambda: [ket_par(), dobas(dobasok, label_dobasok)])
@@ -534,12 +551,10 @@ button_7.bind("<Enter>", ravisz_7)
 button_8.bind("<Enter>", ravisz_8)
 button_9.bind("<Enter>", ravisz_9)
 
-if vege_van():
-    eredmeny_hirdetes()
-else:
-    label_jatek_vege.place(x=10000, y=screensize_y / 3 + screensize_y / 24, width=screensize_x / 4, height=screensize_y / 4)
-    label_jatek_vege_alap.place(x=10000, y=screensize_y / 3, width=screensize_x / 3, height=screensize_y / 3)
-    button_vege.place(x=10000, y=screensize_y / 2 + 100)
+label_jatek_vege.place(x=10000, y=screensize_y / 3 + screensize_y / 24, width=screensize_x / 4, height=screensize_y / 4)
+label_jatek_vege_alap.place(x=10000, y=screensize_y / 3, width=screensize_x / 3, height=screensize_y / 3)
+button_vege.place(x=10000, y=screensize_y / 2 + 100)
 
+# program elindítása
 dobas(dobasok, label_dobasok)
 root.mainloop()
