@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 
-<body onload="haladas(1)">
+<body id="body" onload="haladas(1)">
     <h1>Szabályzat</h1>
     <div id="div">
         <img id="img">
@@ -29,6 +29,8 @@
             <li><b>Nagy póker:</b> - öt egyforma érték <b>(50 pont)</b></li>
         </ul>
     </div>
+    <button type="button" id="dark" onclick="darkMode()">Dark mode</button>
+    <button type="button" id="light" onclick="lightMode()">Light mode</button>
     <script src="main.js"></script>
 </body>
 
