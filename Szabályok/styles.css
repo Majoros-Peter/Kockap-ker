@@ -21,6 +21,7 @@ div{
 img{
     width: 400px;
     transition: 2s;
+    border: rgb(45, 45, 45) 5px solid;
 }
 
 img:hover{
@@ -48,4 +49,19 @@ li{
 #aproBetusResz{
     font-size: 14px;
     font-style: italic;
+}
+
+#dark{
+    background-color: rgb(45, 45, 45);
+    color: white;
+    position: absolute;
+    visibility: hidden;
+    float: right;
+}
+
+#light{
+    background-color: white;
+    color: rgb(45, 45, 45);
+    position: absolute;
+    float: right;
 }
